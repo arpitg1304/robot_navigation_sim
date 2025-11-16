@@ -46,3 +46,6 @@ robot_trace.npy
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Docs
+MODERN_UI_GUIDE.md
