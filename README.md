@@ -45,6 +45,11 @@ python -m src.main
 - **Quit**: Click button or press `ESC`
 
 ## Screenshots
+![Navigation Simulator](screenshots/navigation_sim.png "Navigation Simulatort")
+
+![Map Editor](screenshots/map_editor.png "Map editor")
+
+
 
 **Dark Mode UI:**
 - Clean, modern interface
