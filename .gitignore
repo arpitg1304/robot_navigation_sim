@@ -40,7 +40,6 @@ Thumbs.db
 # Project specific
 *.npy
 robot_trace.npy
-screenshots/*.png
 !screenshots/demo.png
 
 # Testing
