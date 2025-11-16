@@ -45,6 +45,7 @@ robot_trace.npy
 .pytest_cache/
 .coverage
 htmlcov/
+migrate_maps.py
 
 # Docs
 MODERN_UI_GUIDE.md
