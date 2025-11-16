@@ -167,7 +167,7 @@ Contributions welcome! If you create an interesting algorithm:
 
 MIT License - feel free to use and modify!
 
-## Credits
+## Built on top of an old project from grad school course: Advance Robot Navigation
 
 Modernized with:
 - Dark mode UI with professional design
