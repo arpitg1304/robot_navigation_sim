@@ -39,7 +39,7 @@ class Simulator:
             WallFollowerAlgorithm(),
             PotentialFieldAlgorithm(),
         ]
-        self.current_algorithm_index = 1  # Start with reactive target-centric
+        self.current_algorithm_index = 4  # Potential field
         self.robot.set_algorithm(self.algorithms[self.current_algorithm_index])
 
         # Get available maps
