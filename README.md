@@ -15,13 +15,14 @@ A modern Python-based robot navigation simulator with a **beautiful, polished UI
 - 🎮 **Interactive GUI** with real-time visualization
 - 🔌 **Pluggable algorithm system** - easily write and test custom navigation algorithms
 - 🎯 **5 built-in algorithms**:
+  - **Potential Field Navigation** (recommended - best performance with tangential forces and stuck detection)
   - Reactive Navigation (random & target-centric)
   - Simple Target Seeking
   - Wall Following (right-hand rule)
-  - Potential Field Navigation
 - 📊 **Visual feedback** with color-coded sonar, path tracking, and live stats
 - 🗺️ **Custom environments** with obstacles and targets
 - 💾 **Path recording** and analysis
+- 🎯 **8-directional movement** - robot moves in 45-degree increments for cleaner navigation
 
 ## Quick Start
 
