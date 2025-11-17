@@ -26,6 +26,7 @@ def preview_map(map_name: str):
     maps_dir = Path("maps")
     map_folder = maps_dir / map_name
     target_file = map_folder / "target.npy"
+    start_file = map_folder / "start.npy"
     obstacles_file = map_folder / "obstacles.npy"
 
     if not target_file.exists() or not obstacles_file.exists():
@@ -40,10 +41,18 @@ def preview_map(map_name: str):
     target = target_data[0]
     obstacles = list(obstacles_data)
 
+    # Load robot start position
+    if start_file.exists():
+        start_data = np.load(start_file, allow_pickle=True)
+        robot_start = start_data[0]
+    else:
+        robot_start = [350, 200]  # Default
+
     # Print info
     print("=" * 60)
     print(f"Map Preview: {map_name}")
     print("=" * 60)
+    print(f"Robot Start: ({robot_start[0]:.1f}, {robot_start[1]:.1f})")
     print(f"Target: ({target[0]:.1f}, {target[1]:.1f})")
     print(f"Obstacles: {len(obstacles)}")
     print()
@@ -105,17 +114,18 @@ def preview_map(map_name: str):
         pygame.draw.circle(screen, (255, 255, 0), (int(target[0]), int(target[1])), 15)
         pygame.draw.circle(screen, COLOR_WHITE, (int(target[0]), int(target[1])), 4)
 
-        # Robot start position (for reference)
-        start_x, start_y = 350, 200
-        pygame.draw.circle(screen, (59, 130, 246), (start_x, start_y), 10)
-        pygame.draw.circle(screen, COLOR_BLACK, (start_x, start_y), 10, 2)
+        # Robot start position
+        start_x, start_y = int(robot_start[0]), int(robot_start[1])
+        pygame.draw.circle(screen, (59, 130, 246), (start_x, start_y), 12)
+        pygame.draw.circle(screen, COLOR_BLACK, (start_x, start_y), 12, 2)
+        pygame.draw.circle(screen, COLOR_WHITE, (start_x, start_y), 3)
 
         # Info bar
         info_rect = pygame.Rect(0, height, width, 50)
         pygame.draw.rect(screen, (40, 40, 45), info_rect)
 
         info_text = font.render(
-            f"{map_name}: {len(obstacles)} obstacles | Target: ({target[0]:.0f}, {target[1]:.0f})",
+            f"{map_name}: {len(obstacles)} obstacles | Start: ({robot_start[0]:.0f}, {robot_start[1]:.0f}) | Target: ({target[0]:.0f}, {target[1]:.0f})",
             True,
             COLOR_WHITE,
         )

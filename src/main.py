@@ -172,15 +172,16 @@ class Simulator:
 
     def _reset_simulation(self) -> None:
         """Reset the simulation."""
-        from src.config import ROBOT_START_X, ROBOT_START_Y
-        self.robot.x = float(ROBOT_START_X)
-        self.robot.y = float(ROBOT_START_Y)
+        # Use robot start position from the loaded map, or default if not loaded
+        start_x, start_y = self.environment.robot_start
+        self.robot.x = float(start_x)
+        self.robot.y = float(start_y)
         self.robot.heading = 0.0
         self.robot.path_trace = []
         self.state.running = False
         self.state.target_reached = False
         self.robot.algorithm.reset()
-        print("Simulation reset")
+        print(f"Simulation reset (robot at {start_x}, {start_y})")
 
     def update(self) -> None:
         """Update the simulation state."""

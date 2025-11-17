@@ -56,6 +56,7 @@ class Environment:
     def __init__(self) -> None:
         self.obstacles: List[Union[Circle, Polygon]] = []
         self.target: Circle = Circle(0, 0, 0)
+        self.robot_start: Tuple[float, float] = (350.0, 200.0)  # Default robot start position
         self.walls: List[Polygon] = []
         self._create_boundary_walls()
 
@@ -82,11 +83,25 @@ class Environment:
         maps_dir = Path("maps")
         map_folder = maps_dir / map_name
         target_file = map_folder / "target.npy"
+        start_file = map_folder / "start.npy"
         obstacles_file = map_folder / "obstacles.npy"
 
         if not target_file.exists() or not obstacles_file.exists():
             print(f"Warning: Map '{map_name}' not found at {map_folder}/")
             return False
+
+        # Load robot start position if it exists
+        if start_file.exists():
+            try:
+                start_data = np.load(start_file, allow_pickle=True)
+                if len(start_data) > 0:
+                    self.robot_start = (float(start_data[0][0]), float(start_data[0][1]))
+            except Exception as e:
+                print(f"Warning: Could not load start position: {e}")
+                self.robot_start = (350.0, 200.0)
+        else:
+            # Use default if no start position file
+            self.robot_start = (350.0, 200.0)
 
         return self.load_from_numpy(str(target_file), str(obstacles_file))
 

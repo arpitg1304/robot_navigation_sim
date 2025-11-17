@@ -4,9 +4,10 @@ This guide explains how to create custom maps (environments) for the navigation 
 
 ## What is a Map?
 
-A map consists of two components:
-1. **Target** - The goal location (single point with radius)
-2. **Obstacles** - Circles or polygons that the robot must avoid
+A map consists of three components:
+1. **Robot Start Position** - The initial position where the robot spawns
+2. **Target** - The goal location (single point with radius)
+3. **Obstacles** - Circles or polygons that the robot must avoid
 
 ## Map Storage Structure
 
@@ -14,18 +15,22 @@ Maps are stored in the `maps/` directory using a **folder-based structure**:
 ```
 maps/
 ├── my_maze/
+│   ├── start.npy
 │   ├── target.npy
 │   └── obstacles.npy
 ├── corridor/
+│   ├── start.npy
 │   ├── target.npy
 │   └── obstacles.npy
 └── simple/
+    ├── start.npy
     ├── target.npy
     └── obstacles.npy
 ```
 
 Each map has its own folder containing:
-- `target.npy` - Target position data
+- `start.npy` - Robot starting position [x, y]
+- `target.npy` - Target position data [x, y]
 - `obstacles.npy` - Obstacles data (circles and polygons)
 
 ### Migrating Old Maps
@@ -51,6 +56,7 @@ The map editor provides:
 - **Click and drag** to create circular obstacles (radius based on drag distance)
 - **Polygon mode** to create custom polygonal obstacles
 - **Right-click** to place the target
+- **Middle-click** to set robot start position
 - **Delete key** to remove selected obstacle
 - **Save/Load** functionality for map files
 - **Clear** button to start fresh
@@ -68,7 +74,8 @@ The map editor provides:
 - **ESC**: Cancel polygon mode
 
 **General:**
-- **Right Click**: Place target
+- **Right Click**: Place target (amber circle)
+- **Middle Click**: Set robot start position (blue circle)
 - **Click obstacle + Delete**: Remove selected obstacle
 - **N**: Edit map name (type name and press Enter)
 - **S**: Save map (saves with current map name)
@@ -88,6 +95,9 @@ Create a Python script to generate your map:
 import numpy as np
 from pathlib import Path
 
+# Define robot start position
+robot_start = np.array([[100, 100]])
+
 # Define target (x, y)
 target = np.array([[500, 500]])
 
@@ -103,22 +113,27 @@ obstacles = [
     [550, 100, 600, 150, 550, 200],            # Triangle
 ]
 
-# Save to files
+# Save to files (using folder structure)
 maps_dir = Path("maps")
-maps_dir.mkdir(exist_ok=True)
+map_name = "my_map"
+map_folder = maps_dir / map_name
+map_folder.mkdir(parents=True, exist_ok=True)
 
-np.save(maps_dir / "my_target.npy", target)
-np.save(maps_dir / "my_obstacles.npy", obstacles, allow_pickle=True)
+np.save(map_folder / "start.npy", robot_start)
+np.save(map_folder / "target.npy", target)
+np.save(map_folder / "obstacles.npy", obstacles, allow_pickle=True)
 
-print("Map saved to maps/")
+print(f"Map saved to {map_folder}/")
 ```
 
 ### Method 2: Interactive Python Console
 
 ```python
 import numpy as np
+from pathlib import Path
 
-# Start with empty lists
+# Define map data
+robot_start = [[100, 100]]  # [x, y]
 target = [[350, 600]]  # [x, y]
 obstacles = []
 
@@ -131,9 +146,13 @@ obstacles.append([500, 450])
 # Rectangle at (100, 100) to (200, 200)
 obstacles.append([100, 100, 200, 100, 200, 200, 100, 200])
 
-# Save
-np.save("maps/target.npy", target)
-np.save("maps/obstacles.npy", obstacles, allow_pickle=True)
+# Save to folder structure
+map_folder = Path("maps/my_custom_map")
+map_folder.mkdir(parents=True, exist_ok=True)
+
+np.save(map_folder / "start.npy", robot_start)
+np.save(map_folder / "target.npy", target)
+np.save(map_folder / "obstacles.npy", obstacles, allow_pickle=True)
 ```
 
 ---
@@ -142,10 +161,16 @@ np.save("maps/obstacles.npy", obstacles, allow_pickle=True)
 
 Maps are stored as NumPy `.npy` files in their own folders:
 
+### Start Position File (`maps/my_map/start.npy`)
+```python
+# Format: [[x, y]]
+np.array([[100, 100]])  # Robot starts at (100, 100)
+```
+
 ### Target File (`maps/my_map/target.npy`)
 ```python
 # Format: [[x, y]]
-np.array([[500, 500]])  # Single target at (500, 500)
+np.array([[500, 500]])  # Target at (500, 500)
 ```
 
 ### Obstacles File (`maps/my_map/obstacles.npy`)
@@ -165,6 +190,10 @@ np.save("obstacles.npy", obstacles, allow_pickle=True)
 The code automatically detects:
 - **Circle**: Array with 2 elements `[x, y]`
 - **Polygon**: Array with 4+ elements `[x1, y1, x2, y2, ...]`
+
+### Default Values
+
+If `start.npy` is not present in a map folder, the simulator will use the default start position `(350, 200)`.
 
 ---
 

@@ -41,6 +41,7 @@ class MapEditor:
 
         # Map data - obstacles can be [x, y] for circles or [x1,y1,x2,y2,...] for polygons
         self.target = [500, 500]
+        self.robot_start = [350, 200]  # Default robot start position
         self.obstacles = []
         self.selected_obstacle = None
 
@@ -83,6 +84,7 @@ class MapEditor:
         print()
         print("  General:")
         print("    - Right Click: Place target")
+        print("    - Middle Click: Set robot start position")
         print("    - Click obstacle + Delete: Remove obstacle")
         print("    - N: Edit map name")
         print("    - S: Save map")
@@ -194,6 +196,10 @@ class MapEditor:
                             self.circle_current_pos = (x, y)
                             self.selected_obstacle = None
 
+                elif event.button == 2:  # Middle click
+                    self.robot_start = [x, y]
+                    print(f"Robot start position set to ({x}, {y})")
+
                 elif event.button == 3:  # Right click
                     self.target = [x, y]
                     print(f"Target moved to ({x}, {y})")
@@ -258,6 +264,7 @@ class MapEditor:
     def save_map(self):
         """Save current map to files."""
         target_data = np.array([self.target])
+        robot_start_data = np.array([self.robot_start])
         obstacles_data = np.array(self.obstacles, dtype=object)
 
         # Create map folder
@@ -265,9 +272,11 @@ class MapEditor:
         map_folder.mkdir(exist_ok=True)
 
         target_file = map_folder / "target.npy"
+        start_file = map_folder / "start.npy"
         obstacles_file = map_folder / "obstacles.npy"
 
         np.save(target_file, target_data)
+        np.save(start_file, robot_start_data)
         np.save(obstacles_file, obstacles_data, allow_pickle=True)
 
         circles = sum(1 for obs in self.obstacles if len(obs) == 2)
@@ -276,6 +285,7 @@ class MapEditor:
         print("=" * 60)
         print(f"✓ Map saved as '{self.map_name}'")
         print(f"  Location: {map_folder}/")
+        print(f"  Robot start: ({self.robot_start[0]}, {self.robot_start[1]})")
         print(f"  Total obstacles: {len(self.obstacles)} ({circles} circles, {polygons} polygons)")
         print("=" * 60)
 
@@ -283,6 +293,7 @@ class MapEditor:
         """Load map from files."""
         map_folder = self.maps_dir / self.map_name
         target_file = map_folder / "target.npy"
+        start_file = map_folder / "start.npy"
         obstacles_file = map_folder / "obstacles.npy"
 
         if target_file.exists() and obstacles_file.exists():
@@ -291,6 +302,15 @@ class MapEditor:
 
             self.target = list(target_data[0])
             self.obstacles = [list(obs) for obs in obstacles_data]
+
+            # Load robot start position if it exists, otherwise use default
+            if start_file.exists():
+                start_data = np.load(start_file, allow_pickle=True)
+                self.robot_start = list(start_data[0])
+            else:
+                self.robot_start = [350, 200]  # Default
+                print("  Note: No start position found, using default (350, 200)")
+
             self.selected_obstacle = None
 
             circles = sum(1 for obs in self.obstacles if len(obs) == 2)
@@ -299,6 +319,7 @@ class MapEditor:
             print("=" * 60)
             print(f"✓ Map loaded from '{self.map_name}'")
             print(f"  Location: {map_folder}/")
+            print(f"  Robot start: ({self.robot_start[0]}, {self.robot_start[1]})")
             print(f"  Total obstacles: {len(self.obstacles)} ({circles} circles, {polygons} polygons)")
             print("=" * 60)
         else:
@@ -410,6 +431,17 @@ class MapEditor:
                     self.polygon_vertices[0],
                     1
                 )
+
+        # Draw robot start position
+        pygame.draw.circle(
+            self.screen, (59, 130, 246), (int(self.robot_start[0]), int(self.robot_start[1])), 12
+        )
+        pygame.draw.circle(
+            self.screen, COLOR_BLACK, (int(self.robot_start[0]), int(self.robot_start[1])), 12, 2
+        )
+        pygame.draw.circle(
+            self.screen, COLOR_WHITE, (int(self.robot_start[0]), int(self.robot_start[1])), 3
+        )
 
         # Draw target
         pygame.draw.circle(
