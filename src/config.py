@@ -61,7 +61,7 @@ TARGET_RADIUS = 25
 TARGET_DETECTION_DISTANCE = 20
 
 # Sonar settings
-SONAR_RANGE = 60
+SONAR_RANGE = 120  # Increased range for better obstacle detection
 SONAR_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315]  # 8 directions
 SONAR_NUM_BEAMS = 8
 

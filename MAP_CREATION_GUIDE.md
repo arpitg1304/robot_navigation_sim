@@ -79,7 +79,7 @@ The map editor provides:
 - **Click obstacle + Delete**: Remove selected obstacle
 - **N**: Edit map name (type name and press Enter)
 - **S**: Save map (saves with current map name)
-- **L**: Load map (loads map with current name)
+- **L**: Load map (shows list of available maps to choose from)
 - **C**: Clear all obstacles
 - **ESC**: Cancel polygon mode / name editing / Quit editor
 

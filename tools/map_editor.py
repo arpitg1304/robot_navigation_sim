@@ -88,7 +88,7 @@ class MapEditor:
         print("    - Click obstacle + Delete: Remove obstacle")
         print("    - N: Edit map name")
         print("    - S: Save map")
-        print("    - L: Load map")
+        print("    - L: Load map (shows list of available maps)")
         print("    - C: Clear all obstacles")
         print("    - ESC: Quit (or cancel polygon/name edit mode)")
         print("=" * 60)
@@ -161,7 +161,7 @@ class MapEditor:
                     self.save_map()
 
                 elif event.key == pygame.K_l:
-                    self.load_map()
+                    self.show_map_selector()
 
                 elif event.key == pygame.K_c:
                     self.clear_map()
@@ -260,6 +260,60 @@ class MapEditor:
             obs_type = "circle" if len(obs) == 2 else "polygon"
             print(f"Deleted {obs_type} obstacle")
             self.selected_obstacle = None
+
+    def get_available_maps(self):
+        """Get list of available map names."""
+        if not self.maps_dir.exists():
+            return []
+
+        maps = []
+        for map_folder in self.maps_dir.iterdir():
+            if map_folder.is_dir():
+                target_file = map_folder / "target.npy"
+                obstacles_file = map_folder / "obstacles.npy"
+                if target_file.exists() and obstacles_file.exists():
+                    maps.append(map_folder.name)
+
+        return sorted(maps)
+
+    def show_map_selector(self):
+        """Show console-based map selector."""
+        available_maps = self.get_available_maps()
+
+        if not available_maps:
+            print("=" * 60)
+            print("No maps found!")
+            print("Create a new map first with 'N' (name) and 'S' (save)")
+            print("=" * 60)
+            return
+
+        print("\n" + "=" * 60)
+        print("Available Maps:")
+        print("=" * 60)
+        for i, map_name in enumerate(available_maps, 1):
+            print(f"  {i}. {map_name}")
+        print()
+        print("Enter map number to load (or 0 to cancel):")
+        print("=" * 60)
+
+        # Simple console input for map selection
+        try:
+            choice = input("Map number: ").strip()
+            if choice.isdigit():
+                choice_num = int(choice)
+                if choice_num == 0:
+                    print("Load cancelled")
+                    return
+                elif 1 <= choice_num <= len(available_maps):
+                    selected_map = available_maps[choice_num - 1]
+                    self.map_name = selected_map
+                    self.load_map()
+                else:
+                    print(f"Invalid choice: {choice_num}")
+            else:
+                print("Invalid input")
+        except (EOFError, KeyboardInterrupt):
+            print("\nLoad cancelled")
 
     def save_map(self):
         """Save current map to files."""
