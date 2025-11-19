@@ -23,6 +23,7 @@ A modern Python-based robot navigation simulator with a **beautiful, polished UI
 - 🗺️ **Custom environments** with obstacles and targets
 - 💾 **Path recording** and analysis
 - 🎯 **8-directional movement** - robot moves in 45-degree increments for cleaner navigation
+- 🤖 **RL-ready Gymnasium environment** - train agents with any RL library (PPO, SAC, DQN, etc.)
 
 ## Quick Start
 
@@ -34,9 +35,13 @@ pip install pygame numpy
 
 # Run the simulator
 python -m src.main
+
+# For RL training (optional)
+pip install gymnasium
+pip install stable-baselines3  # Optional: for RL examples
 ```
 
-### Controls
+### Interactive Simulator Controls
 
 - **Start/Stop**: Click button or press `SPACE`
 - **Algorithm Dropdown**: Select from all available algorithms
@@ -44,6 +49,41 @@ python -m src.main
 - **Sonar/Tracking**: Toggle buttons to control features
 - **Reset**: Reset robot to starting position
 - **Quit**: Click button or press `ESC`
+
+### RL Training Quick Start
+
+**🎯 Easy Way - Interactive TUI:**
+```bash
+# Launch interactive terminal UI (recommended!)
+python rl_tui.py
+```
+
+The TUI provides:
+- ✨ Interactive menus for training/testing
+- 📂 Automatic model detection and selection
+- 🗺️ Map selection dropdowns
+- 📊 Real-time progress and statistics
+- 🎮 No need to remember command-line arguments!
+
+**⚡ Command Line (Advanced):**
+```bash
+# Run random baseline
+python rl/train_rl.py --mode random --episodes 10
+
+# Train with PPO
+python rl/train_rl.py --mode sb3 --timesteps 50000
+
+# Test trained model (headless)
+python rl/test_policy_headless.py --model models/ppo_reactive_nav.zip --episodes 100
+
+# Test with visualization
+python rl/test_policy_visual.py --model models/ppo_reactive_nav.zip --episodes 10
+```
+
+**Documentation:**
+- **[TEST_POLICIES.md](rl/TEST_POLICIES.md)** - Quick guide for testing trained policies
+- **[RL_GUIDE.md](rl/RL_GUIDE.md)** - Complete RL training documentation
+- **[rl/README.md](rl/README.md)** - Detailed examples reference
 
 ## Screenshots
 ![Navigation Simulator](screenshots/navigation_sim.png "Navigation Simulatort")
@@ -97,22 +137,38 @@ reactive-nav-sim-modern/
 │   │   └── potential_field.py
 │   ├── ui_components.py     # Modern UI components
 │   ├── modern_renderer.py   # Modern renderer with effects
+│   ├── gym_env.py           # RL Gymnasium environment
 │   ├── main.py              # Entry point
 │   ├── robot.py             # Robot class
 │   ├── environment.py       # Environment & obstacles
 │   ├── sonar.py             # Sonar sensor
 │   └── config.py            # Configuration & colors
+├── rl/                      # RL training & testing
+│   ├── train_rl.py          # Training script
+│   ├── test_policy_headless.py
+│   ├── test_policy_visual.py
+│   ├── test_random_policy.py
+│   ├── README.md            # RL scripts guide
+│   ├── RL_GUIDE.md          # Complete RL training guide
+│   ├── TEST_POLICIES.md     # Testing guide
+│   ├── TUI_GUIDE.md         # Terminal UI guide
+│   └── CHANGELOG.md         # RL feature changelog
 ├── user_algorithms/         # Your custom algorithms go here!
 │   └── template.py          # Template for new algorithms
-├── ALGORITHM_GUIDE.md       # Complete guide for algorithms
+├── maps/                    # Environment maps
+├── tools/                   # Map editor and utilities
+├── rl_tui.py                # Interactive TUI for RL
+├── RL_QUICKREF.md           # Quick reference card
+├── ALGORITHM_GUIDE.md       # Algorithm development guide
 ├── MODERN_UI_GUIDE.md       # UI customization guide
-├── QUICK_START.md           # Quick reference
+├── QUICK_START.md           # Quick start guide
 └── README.md                # This file
 ```
 
 ## Documentation
 
 - **[ALGORITHM_GUIDE.md](ALGORITHM_GUIDE.md)** - Complete guide for writing custom algorithms
+- **[RL_GUIDE.md](rl/RL_GUIDE.md)** - RL training guide with Gymnasium environment
 - **[MODERN_UI_GUIDE.md](MODERN_UI_GUIDE.md)** - UI features and customization
 - **[QUICK_START.md](QUICK_START.md)** - Quick reference guide
 
