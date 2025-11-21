@@ -52,18 +52,22 @@ pip install stable-baselines3  # Optional: for RL examples
 
 ### RL Training Quick Start
 
-**🎯 Easy Way - Interactive TUI:**
+**🎯 NEW: Train on Diverse Maps for Better Generalization!**
 ```bash
 # Launch interactive terminal UI (recommended!)
 python rl_tui.py
+# Select: Train → Multi-Map → Diverse set (6 maps)
+# This trains on 6 carefully designed maps for maximum generalization
 ```
 
 The TUI provides:
 - ✨ Interactive menus for training/testing
 - 📂 Automatic model detection and selection
-- 🗺️ Map selection dropdowns
+- 🗺️ **NEW: Diverse map set (6 curated maps for generalization)**
 - 📊 Real-time progress and statistics
 - 🎮 No need to remember command-line arguments!
+
+**Why diverse maps?** Single-map training achieves 70% success but fails (0-5%) on new maps. Multi-map training gets 40-60% across ALL maps with true generalization. [Read more →](NEW_MAPS.md)
 
 **⚡ Command Line (Advanced):**
 ```bash

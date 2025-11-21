@@ -140,14 +140,20 @@ def train_menu():
         maps = get_available_maps()
         console.print("[bold]Select Maps for Multi-Map Training:[/bold]")
         console.print("  1. [cyan]All maps[/cyan] (best generalization)")
-        console.print("  2. [cyan]All except challenge[/cyan] (easier training)")
-        console.print("  3. [cyan]Custom selection[/cyan]")
+        console.print("  2. [cyan]Diverse set (6 maps)[/cyan] - open_field→mixed_complexity")
+        console.print("  3. [cyan]All except challenge[/cyan] (easier training)")
+        console.print("  4. [cyan]Custom selection[/cyan]")
 
-        map_choice = Prompt.ask("\nSelect maps", choices=["1", "2", "3"], default="1")
+        map_choice = Prompt.ask("\nSelect maps", choices=["1", "2", "3", "4"], default="2")
 
         if map_choice == "1":
             selected_maps = maps
         elif map_choice == "2":
+            # Diverse training set (curated for generalization)
+            diverse_maps = ['open_field', 'scattered_rocks', 'narrow_corridors',
+                           'dense_forest', 'u_shaped_trap', 'mixed_complexity']
+            selected_maps = [m for m in diverse_maps if m in maps]
+        elif map_choice == "3":
             selected_maps = [m for m in maps if m != "challenge"]
         else:
             console.print("\nAvailable maps:")
@@ -322,7 +328,7 @@ def test_menu():
     console.print("  1. [cyan]Headless[/cyan] (fast, comprehensive stats)")
     console.print("  2. [cyan]Visual[/cyan] (watch the agent navigate)")
 
-    test_mode = Prompt.ask("\nSelect mode", choices=["1", "2"], default="1")
+    test_mode = Prompt.ask("\nSelect mode", choices=["1", "2"], default="2")
     visual = test_mode == "2"
 
     # Episodes
